@@ -1,0 +1,290 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.main-content {
+  padding: 24px;
+  background-color: #f5f5f5;
+  min-height: calc(100vh - 64px);
+  transition: background-color 0.3s ease;
+}
+
+.page-title {
+  margin-bottom: 24px !important;
+}
+
+.page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.form-field {
+  margin-bottom: 16px !important;
+}
+
+.image-preview {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.upload-area {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  
+  &:hover {
+    border-color: #1976d2;
+  }
+}
+
+.dialog-content {
+  min-width: 300px;
+  max-width: 600px;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  
+  &.active {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  &.returned {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  &.late {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+}
+
+.details-section {
+  margin-bottom: 16px;
+  
+  h4 {
+    margin-bottom: 8px;
+    color: #666;
+  }
+}
+
+.activity-log {
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  padding: 8px;
+  
+  .log-item {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.chart-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px;
+  color: #999;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* Responsive Styles */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .page-container {
+    max-width: 100%;
+  }
+  
+  .chart-container {
+    margin-bottom: 16px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 16px;
+  }
+  
+  .page-title {
+    font-size: 20px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .form-container {
+    padding: 16px;
+  }
+  
+  .dialog-content {
+    min-width: 280px;
+    max-width: 100%;
+  }
+  
+  .chart-container {
+    padding: 12px;
+  }
+  
+  .action-buttons {
+    flex-wrap: wrap;
+  }
+  
+  .details-section {
+    font-size: 14px;
+  }
+  
+  .activity-log {
+    max-height: 150px;
+  }
+}
+
+/* Extra small */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 12px;
+  }
+  
+  .page-title {
+    font-size: 18px !important;
+  }
+  
+  .form-field {
+    margin-bottom: 12px !important;
+  }
+  
+  .upload-area {
+    padding: 16px;
+  }
+  
+  .image-preview {
+    max-height: 150px;
+  }
+}
+
+/* DataGrid responsive */
+.MuiDataGrid-root {
+  font-size: 14px;
+  
+  @media (max-width: 600px) {
+    font-size: 12px;
+    
+    .MuiDataGrid-columnHeaderTitle {
+      font-size: 12px;
+    }
+    
+    .MuiDataGrid-cell {
+      padding: 8px 4px;
+    }
+  }
+}
+
+/* Sidebar responsive */
+@media (max-width: 768px) {
+  .MuiDrawer-paper {
+    width: 240px !important;
+  }
+}
+
+/* Header responsive */
+@media (max-width: 600px) {
+  .MuiToolbar-root {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  
+  .MuiTypography-h6 {
+    font-size: 16px !important;
+  }
+}
+
+/* Dialog responsive */
+@media (max-width: 480px) {
+  .MuiDialogTitle-root {
+    font-size: 18px;
+  }
+  
+  .MuiDialogContent-root {
+    padding: 16px;
+  }
+  
+  .MuiDialogActions-root {
+    padding: 8px 16px;
+  }
+}
+
+/* Button responsive */
+@media (max-width: 480px) {
+  .MuiButton-root {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+  
+  .MuiButton-startIcon {
+    margin-right: 4px;
+  }
+}
+
+/* Form controls responsive */
+@media (max-width: 480px) {
+  .MuiTextField-root,
+  .MuiFormControl-root {
+    margin-bottom: 12px;
+  }
+  
+  .MuiInputLabel-root {
+    font-size: 14px;
+  }
+  
+  .MuiInputBase-input {
+    font-size: 14px;
+  }
+}

@@ -23,16 +23,33 @@ body {
   margin-bottom: 24px !important;
 }
 
-.page-container {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
   margin-top: 16px;
+  
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.movie-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .MuiCardMedia-root {
+    height: 200px;
+  }
+  
+  .movie-overlay {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
+  }
 }
 
 .form-container {
@@ -137,9 +154,7 @@ body {
   gap: 8px;
 }
 
-/* Responsive Styles */
 
-/* Tablet */
 @media (max-width: 1024px) {
   .page-container {
     max-width: 100%;
@@ -147,6 +162,10 @@ body {
   
   .chart-container {
     margin-bottom: 16px;
+  }
+  
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
 }
 

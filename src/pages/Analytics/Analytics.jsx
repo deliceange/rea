@@ -33,11 +33,11 @@ const Analytics = () => {
 
   return (
     <Box className="page-container">
-      <Typography variant="h4" className="page-title">
+      <Typography variant="h4" className="page-title" sx={{ mb: { xs: 2, sm: 3 } }}>
         Analytics
       </Typography>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={{ xs: 2, sm: 3 }}>
         {/* Popular Genres - Pie Chart */}
         <Grid item xs={12} md={6}>
           <Box className="chart-container">

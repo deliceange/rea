@@ -14,8 +14,11 @@ import {
   FormControl,
   InputLabel,
   Chip,
+  Card,
+  CardContent,
+  CardMedia,
+  CardActions,
 } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -25,15 +28,18 @@ import {
   CloudUpload as CloudUploadIcon,
 } from '@mui/icons-material';
 import { useAppContext } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { genres } from '../../data/mockData';
 import '../../styles/main.scss';
 
 const Movies = () => {
-  const { movies, addMovie, updateMovie, deleteMovie, getMovieRentals } = useAppContext();
+  const { movies, addMovie, updateMovie, deleteMovie, getMovieRentals, createRental } = useAppContext();
+  const { isAdmin, user } = useAuth();
   
   const [open, setOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [rentOpen, setRentOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -45,63 +51,12 @@ const Movies = () => {
   });
   const [imagePreview, setImagePreview] = useState('');
   const [errors, setErrors] = useState({});
+  const [rentalFormData, setRentalFormData] = useState({
+    rentalDate: '',
+    days: 1,
+  });
 
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    {
-      field: 'coverImage',
-      headerName: 'Cover',
-      width: 80,
-      renderCell: (params) => (
-        <Box
-          component="img"
-          src={params.value}
-          alt={params.row.title}
-          sx={{ width: 40, height: 60, objectFit: 'cover', borderRadius: 1 }}
-        />
-      ),
-    },
-    { field: 'title', headerName: 'Title', flex: 1, minWidth: 150 },
-    { field: 'genre', headerName: 'Genre', width: 100 },
-    { field: 'releaseYear', headerName: 'Year', width: 90 },
-    {
-      field: 'rentalPrice',
-      headerName: 'Price (RWF)',
-      width: 110,
-      renderCell: (params) => `RWF ${params.value}`,
-    },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      width: 180,
-      sortable: false,
-      renderCell: (params) => (
-        <Box className="action-buttons">
-          <IconButton
-            size="small"
-            onClick={() => handleView(params.row)}
-            color="primary"
-          >
-            <VisibilityIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            size="small"
-            onClick={() => handleEdit(params.row)}
-            color="primary"
-          >
-            <EditIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            size="small"
-            onClick={() => handleDeleteClick(params.row)}
-            color="error"
-          >
-            <DeleteIcon fontSize="small" />
-          </IconButton>
-        </Box>
-      ),
-    },
-  ];
+  const movieRentals = selectedMovie ? getMovieRentals(selectedMovie.id) : [];
 
   const handleView = (movie) => {
     setSelectedMovie(movie);
@@ -125,6 +80,42 @@ const Movies = () => {
   const handleDeleteClick = (movie) => {
     setSelectedMovie(movie);
     setDeleteOpen(true);
+  };
+
+  const handleRentClick = () => {
+    setRentalFormData({
+      rentalDate: new Date().toISOString().split('T')[0],
+      days: 1,
+    });
+    setRentOpen(true);
+  };
+
+  const handleRentalFormChange = (e) => {
+    const { name, value } = e.target;
+    setRentalFormData((prev) => ({ ...prev, [name]: name === 'days' ? parseInt(value) : value }));
+  };
+
+  const handleRentalSubmit = () => {
+    if (!rentalFormData.rentalDate || !rentalFormData.days) {
+      alert('Please fill in all rental details');
+      return;
+    }
+
+    const rentalDate = new Date(rentalFormData.rentalDate);
+    const expectedReturnDate = new Date(rentalDate);
+    expectedReturnDate.setDate(expectedReturnDate.getDate() + rentalFormData.days);
+
+    const rental = {
+      customerId: user.id,
+      movieId: selectedMovie.id,
+      rentalDate: rentalFormData.rentalDate,
+      expectedReturnDate: expectedReturnDate.toISOString().split('T')[0],
+    };
+
+    createRental(rental);
+    setRentOpen(false);
+    setViewOpen(false);
+    alert(`Rental created successfully for ${selectedMovie.title}!`);
   };
 
   const handleAdd = () => {
@@ -158,8 +149,8 @@ const Movies = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
-        setErrors((prev) => ({ ...prev, coverImage: 'Only JPG and PNG files are allowed' }));
+      if (!file.type.startsWith('image/')) {
+        setErrors((prev) => ({ ...prev, coverImage: 'Only image files are allowed' }));
         return;
       }
       if (file.size > 2 * 1024 * 1024) {
@@ -208,33 +199,72 @@ const Movies = () => {
     setSelectedMovie(null);
   };
 
-  const movieRentals = selectedMovie ? getMovieRentals(selectedMovie.id) : [];
-
   return (
-    <Box className="page-container">
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" className="page-title">
+    <Box>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'center' }, mb: 3, gap: 2 }}>
+        <Typography variant="h4" sx={{ m: 0, fontWeight: 700 }}>
           Movies
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleAdd}
-        >
-          Add Movie
-        </Button>
+        {isAdmin && (
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleAdd}
+            sx={{ minWidth: 120 }}
+          >
+            Add
+          </Button>
+        )}
       </Box>
 
-      <Box sx={{ height: 500, width: '100%' }}>
-        <DataGrid
-          rows={movies}
-          columns={columns}
-          initialState={{
-            pagination: { paginationModel: { pageSize: 10 } },
-          }}
-          pageSizeOptions={[5, 10, 25]}
-          disableRowSelectionOnClick
-        />
+      <Box className="card-grid">
+        {movies.map((movie) => (
+          <Card key={movie.id} className="movie-card" sx={{ maxWidth: 345, position: 'relative', overflow: 'hidden' }}>
+            <CardMedia
+              component="img"
+              height="200"
+              image={movie.coverImage}
+              alt={movie.title}
+              sx={{ objectFit: 'cover' }}
+            />
+            <Box
+              className="movie-overlay"
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
+                p: 2,
+              }}
+            >
+              <Typography variant="h6" component="div" sx={{ color: 'white', fontWeight: 'bold' }}>
+                {movie.title}
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>
+                {movie.genre} • {movie.releaseYear} • RWF {movie.rentalPrice}/day
+              </Typography>
+            </Box>
+            <CardActions sx={{ justifyContent: 'space-between', p: 1 }}>
+              <IconButton size="small" onClick={() => handleView(movie)} color="primary">
+                <VisibilityIcon />
+              </IconButton>
+              {isAdmin && (
+                <>
+                  <IconButton size="small" onClick={() => handleEdit(movie)} color="primary">
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton size="small" onClick={() => handleDeleteClick(movie)} color="error">
+                    <DeleteIcon />
+                  </IconButton>
+                </>
+              )}
+            </CardActions>
+          </Card>
+        ))}
       </Box>
 
       {/* Add/Edit Dialog */}
@@ -362,18 +392,20 @@ const Movies = () => {
         <DialogContent>
           {selectedMovie && (
             <Box>
-              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, mb: 2, alignItems: { xs: 'center', sm: 'flex-start' } }}>
                 <Box
                   component="img"
                   src={selectedMovie.coverImage}
                   alt={selectedMovie.title}
-                  sx={{ width: 150, height: 225, objectFit: 'cover', borderRadius: 2 }}
+                  sx={{ width: { xs: 120, sm: 150 }, height: { xs: 180, sm: 225 }, objectFit: 'cover', borderRadius: 2 }}
                 />
-                <Box>
+                <Box sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
                   <Typography variant="h5" gutterBottom>
                     {selectedMovie.title}
                   </Typography>
-                  <Chip label={selectedMovie.genre} color="primary" sx={{ mr: 1 }} />
+                  <Box sx={{ mb: 1 }}>
+                    <Chip label={selectedMovie.genre} color="primary" sx={{ mr: 0.5, mb: 0.5 }} />
+                  </Box>
                   <Typography variant="body2" color="text.secondary">
                     {selectedMovie.releaseYear}
                   </Typography>
@@ -420,6 +452,62 @@ const Movies = () => {
             </Box>
           )}
         </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          {!isAdmin && (
+            <Button variant="contained" color="primary" onClick={handleRentClick}>
+              Rent Now
+            </Button>
+          )}
+          <Button onClick={() => setViewOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Rental Dialog */}
+      <Dialog open={rentOpen} onClose={() => setRentOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          Rent: {selectedMovie?.title}
+          <IconButton onClick={() => setRentOpen(false)} size="small">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            <TextField
+              fullWidth
+              label="Rental Date"
+              name="rentalDate"
+              type="date"
+              value={rentalFormData.rentalDate}
+              onChange={handleRentalFormChange}
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="Number of Days"
+              name="days"
+              type="number"
+              inputProps={{ min: 1, max: 30 }}
+              value={rentalFormData.days}
+              onChange={handleRentalFormChange}
+              sx={{ mb: 2 }}
+            />
+            <Box sx={{ p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
+              <Typography variant="body2" gutterBottom>
+                <strong>Rental Price:</strong> RWF {selectedMovie?.rentalPrice}/day
+              </Typography>
+              <Typography variant="h6" color="primary">
+                <strong>Total:</strong> RWF {(selectedMovie?.rentalPrice || 0) * rentalFormData.days}
+              </Typography>
+            </Box>
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={() => setRentOpen(false)}>Cancel</Button>
+          <Button variant="contained" color="primary" onClick={handleRentalSubmit}>
+            Confirm Rental
+          </Button>
+        </DialogActions>
       </Dialog>
 
       {/* Delete Confirmation Dialog */}

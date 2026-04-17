@@ -22,10 +22,19 @@ import {
   AssignmentReturn as ReturnIcon,
 } from '@mui/icons-material';
 import { useAppContext } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import '../../styles/main.scss';
 
 const Rentals = () => {
   const { movies, customers, rentals, createRental, returnRental } = useAppContext();
+  const { isAdmin, user } = useAuth();
+
+  const displayedRentals = useMemo(() => {
+    if (isAdmin) {
+      return rentals;
+    }
+    return rentals.filter((r) => r.customerId === user.id);
+  }, [rentals, isAdmin, user]);
   
   const [open, setOpen] = useState(false);
   const [returnOpen, setReturnOpen] = useState(false);
@@ -44,40 +53,42 @@ const Rentals = () => {
     return movies.filter((m) => !activeRentals.includes(m.id));
   }, [movies, rentals]);
 
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
+const columns = [
+    { field: 'id', headerName: 'ID', width: 60, hide: true },
     {
       field: 'movie',
       headerName: 'Movie',
       flex: 1,
-      minWidth: 150,
+      minWidth: 120,
       valueGetter: (value, row) => {
         const movie = movies.find((m) => m.id === row.movieId);
         return movie?.title || 'Unknown';
       },
     },
-    {
+    ...(isAdmin ? [{
       field: 'customer',
       headerName: 'Customer',
       flex: 1,
-      minWidth: 150,
+      minWidth: 100,
+      hide: true,
       valueGetter: (value, row) => {
         const customer = customers.find((c) => c.id === row.customerId);
         return customer?.name || 'Unknown';
       },
-    },
-    { field: 'rentalDate', headerName: 'Rental Date', width: 120 },
-    { field: 'expectedReturnDate', headerName: 'Expected Return', width: 120 },
+    }] : []),
+    { field: 'rentalDate', headerName: 'Rented', width: 90, hide: true },
+    { field: 'expectedReturnDate', headerName: 'Expected', width: 90, hide: true },
     {
       field: 'actualReturnDate',
-      headerName: 'Actual Return',
-      width: 120,
+      headerName: 'Returned',
+      width: 90,
+      hide: true,
       valueGetter: (value, row) => row.actualReturnDate || '-',
     },
     {
       field: 'status',
       headerName: 'Status',
-      width: 120,
+      width: 90,
       renderCell: (params) => {
         const isLate = params.row.lateFee > 0;
         return (
@@ -103,28 +114,44 @@ const Rentals = () => {
     },
     {
       field: 'lateFee',
-      headerName: 'Late Fee',
-      width: 100,
+      headerName: 'Fee',
+      width: 70,
       renderCell: (params) =>
         params.value > 0 ? `RWF ${params.value}` : '-',
     },
-    {
+    ...(isAdmin ? [{
       field: 'actions',
       headerName: 'Actions',
-      width: 100,
+      width: 90,
       sortable: false,
       renderCell: (params) =>
         params.row.status === 'active' ? (
           <Button
             size="small"
             variant="contained"
-            startIcon={<ReturnIcon />}
             onClick={() => handleReturn(params.row)}
+            sx={{ minWidth: 'auto', px: 1 }}
           >
-            Return
+            <ReturnIcon fontSize="small" />
           </Button>
         ) : null,
-    },
+    }] : [{
+      field: 'actions',
+      headerName: 'Actions',
+      width: 90,
+      sortable: false,
+      renderCell: (params) =>
+        !isAdmin && params.row.status === 'active' && params.row.customerId === user.id ? (
+          <Button
+            size="small"
+            variant="contained"
+            onClick={() => handleReturn(params.row)}
+            sx={{ minWidth: 'auto', px: 1 }}
+          >
+            <ReturnIcon fontSize="small" />
+          </Button>
+        ) : null,
+    }]),
   ];
 
   const handleReturn = (rental) => {
@@ -136,7 +163,7 @@ const Rentals = () => {
   const handleAdd = () => {
     setFormData({
       movieId: '',
-      customerId: '',
+      customerId: isAdmin ? '' : user.id,
       rentalDate: new Date().toISOString().split('T')[0],
       expectedReturnDate: '',
     });
@@ -159,7 +186,7 @@ const Rentals = () => {
   const validateForm = () => {
     const newErrors = {};
     if (!formData.movieId) newErrors.movieId = 'Please select a movie';
-    if (!formData.customerId) newErrors.customerId = 'Please select a customer';
+    if (isAdmin && !formData.customerId) newErrors.customerId = 'Please select a customer';
     if (!formData.rentalDate) newErrors.rentalDate = 'Rental date is required';
     if (!formData.expectedReturnDate) newErrors.expectedReturnDate = 'Expected return date is required';
     setErrors(newErrors);
@@ -182,22 +209,23 @@ const Rentals = () => {
 
   return (
     <Box className="page-container">
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" className="page-title">
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'center' }, mb: 3, gap: 2 }}>
+        <Typography variant="h4" className="page-title" sx={{ m: 0 }}>
           Rentals
         </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleAdd}
+          sx={{ minWidth: 120 }}
         >
-          New Rental
+          {isAdmin ? 'New' : 'Rent'}
         </Button>
       </Box>
 
       <Box sx={{ height: 500, width: '100%' }}>
         <DataGrid
-          rows={rentals}
+          rows={displayedRentals}
           columns={columns}
           initialState={{
             pagination: { paginationModel: { pageSize: 10 } },
@@ -210,7 +238,7 @@ const Rentals = () => {
       {/* New Rental Dialog */}
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          New Rental
+          {isAdmin ? 'New Rental' : 'Rent a Movie'}
           <IconButton onClick={handleClose} size="small">
             <CloseIcon />
           </IconButton>
@@ -238,6 +266,7 @@ const Rentals = () => {
               )}
             </FormControl>
             
+            {isAdmin && (
             <FormControl fullWidth className="form-field" error={!!errors.customerId}>
               <InputLabel>Select Customer</InputLabel>
               <Select
@@ -258,6 +287,7 @@ const Rentals = () => {
                 </Typography>
               )}
             </FormControl>
+            )}
             
             <TextField
               fullWidth

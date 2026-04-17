@@ -37,27 +37,28 @@ const Customers = () => {
   const [errors, setErrors] = useState({});
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Name', flex: 1, minWidth: 150 },
-    { field: 'email', headerName: 'Email', flex: 1, minWidth: 180 },
-    { field: 'phone', headerName: 'Phone', width: 140 },
-    { field: 'address', headerName: 'Address', flex: 1, minWidth: 150 },
+    { field: 'id', headerName: 'ID', width: 60, hide: true },
+    { field: 'name', headerName: 'Name', flex: 1, minWidth: 120 },
+    { field: 'email', headerName: 'Email', flex: 1, minWidth: 140, hide: true },
+    { field: 'phone', headerName: 'Phone', width: 100, hide: true },
+    { field: 'address', headerName: 'Address', width: 100, hide: true },
     {
       field: 'totalRentals',
-      headerName: 'Total Rentals',
-      width: 110,
+      headerName: 'Rentals',
+      width: 80,
     },
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 180,
+      width: 130,
       sortable: false,
       renderCell: (params) => (
-        <Box className="action-buttons">
+        <Box className="action-buttons" sx={{ gap: 0.5 }}>
           <IconButton
             size="small"
             onClick={() => handleView(params.row)}
             color="primary"
+            sx={{ p: 0.5 }}
           >
             <VisibilityIcon fontSize="small" />
           </IconButton>
@@ -65,6 +66,7 @@ const Customers = () => {
             size="small"
             onClick={() => handleEdit(params.row)}
             color="primary"
+            sx={{ p: 0.5 }}
           >
             <EditIcon fontSize="small" />
           </IconButton>
@@ -72,6 +74,7 @@ const Customers = () => {
             size="small"
             onClick={() => handleDeleteClick(params.row)}
             color="error"
+            sx={{ p: 0.5 }}
           >
             <DeleteIcon fontSize="small" />
           </IconButton>
@@ -167,16 +170,17 @@ const Customers = () => {
 
   return (
     <Box className="page-container">
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" className="page-title">
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'center' }, mb: 3, gap: 2 }}>
+        <Typography variant="h4" className="page-title" sx={{ m: 0 }}>
           Customers
         </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleAdd}
+          sx={{ minWidth: 120 }}
         >
-          Add Customer
+          Add
         </Button>
       </Box>
 

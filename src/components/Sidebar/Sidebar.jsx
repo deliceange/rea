@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Drawer,
@@ -20,12 +19,18 @@ import {
   BarChart as BarChartIcon,
 } from '@mui/icons-material';
 import { useAppContext } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 
-const menuItems = [
+const adminMenuItems = [
   { text: 'Movies', icon: <MovieIcon />, path: '/' },
   { text: 'Customers', icon: <PeopleIcon />, path: '/customers' },
   { text: 'Rentals', icon: <AssignmentIcon />, path: '/rentals' },
   { text: 'Analytics', icon: <BarChartIcon />, path: '/analytics' },
+];
+
+const customerMenuItems = [
+  { text: 'Movies', icon: <MovieIcon />, path: '/' },
+  { text: 'Rentals', icon: <AssignmentIcon />, path: '/rentals' },
 ];
 
 const Sidebar = ({ mobileOpen, onMobileClose }) => {
@@ -33,9 +38,11 @@ const Sidebar = ({ mobileOpen, onMobileClose }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { sidebarOpen } = useAppContext();
+  const { isAdmin } = useAuth();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
   const drawerWidth = 240;
+  const menuItems = isAdmin ? adminMenuItems : customerMenuItems;
 
   const handleNavigation = (path) => {
     navigate(path);

@@ -4,18 +4,22 @@ const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#1976d2',
+      main: '#D4A017', // Warm Gold
+      light: '#FCD34D',
+      dark: '#B8940A',
     },
     secondary: {
-      main: '#dc004e',
+      main: '#B8860B', // Dark Gold
+      light: '#E5C07A',
+      dark: '#9C7A00',
     },
     background: {
-      default: '#f5f5f5',
-      paper: '#ffffff',
+      default: '#FDF6E3', // Luxury Cream
+      paper: '#FFFFFF',
     },
     text: {
-      primary: '#212121',
-      secondary: '#757575',
+      primary: '#1A1A1A',
+      secondary: '#4A5568',
     },
   },
   typography: {
@@ -43,7 +47,7 @@ const lightTheme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          boxShadow: '0 4px 20px rgba(212, 160, 23, 0.15)', // Gold-tinted shadow
         },
       },
     },
@@ -54,6 +58,13 @@ const lightTheme = createTheme({
         },
       },
     },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: 'linear-gradient(145deg, #FFFFFF 0%, #FDF6E3 100%)',
+        }
+      }
+    }
   },
 });
 
@@ -61,18 +72,22 @@ const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#90caf9',
+      main: '#FF8C00', // Dark Orange Gold
+      light: '#FFB347',
+      dark: '#E67700',
     },
     secondary: {
-      main: '#f50057',
+      main: '#DAA520', // Goldenrod
+      light: '#F0D5A0',
+      dark: '#B8860B',
     },
     background: {
-      default: '#121212',
-      paper: '#1e1e1e',
+      default: '#0C0F14', // Deep Luxury Navy
+      paper: '#1A1D24',
     },
     text: {
-      primary: '#ffffff',
-      secondary: '#b0b0b0',
+      primary: '#F5F5F5',
+      secondary: '#A0AEC0',
     },
   },
   typography: {
@@ -100,7 +115,7 @@ const darkTheme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+          boxShadow: '0 8px 32px rgba(212, 160, 23, 0.25)', // Luxury gold glow
         },
       },
     },
@@ -111,6 +126,13 @@ const darkTheme = createTheme({
         },
       },
     },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: 'linear-gradient(145deg, #1A1D24 0%, #0C0F14 100%)',
+        }
+      }
+    }
   },
 });
 

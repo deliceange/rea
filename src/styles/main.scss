@@ -14,9 +14,9 @@ body {
 
 .main-content {
   padding: 24px;
-  background-color: #f5f5f5;
+  background: linear-gradient(135deg, #FDF6E3 0%, #FAF3E0 100%);
   min-height: calc(100vh - 64px);
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .page-title {
@@ -71,15 +71,18 @@ body {
 }
 
 .upload-area {
-  border: 2px dashed #ccc;
-  border-radius: 8px;
+  border: 2px dashed #D4A017;
+  border-radius: 12px;
   padding: 24px;
   text-align: center;
   cursor: pointer;
-  transition: border-color 0.2s ease;
+  transition: all 0.3s ease;
+  background: linear-gradient(145deg, rgba(212, 160, 23, 0.05) 0%, transparent 100%);
   
   &:hover {
-    border-color: #1976d2;
+    border-color: #FF8C00;
+    background: linear-gradient(145deg, rgba(212, 160, 23, 0.1) 0%, transparent 100%);
+    transform: translateY(-2px);
   }
 }
 
@@ -122,13 +125,14 @@ body {
 .activity-log {
   max-height: 200px;
   overflow-y: auto;
-  background-color: #f9f9f9;
-  border-radius: 4px;
-  padding: 8px;
+  background: linear-gradient(145deg, #FAF3E0 0%, #F8F1DC 100%);
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid rgba(212, 160, 23, 0.1);
   
   .log-item {
-    padding: 8px;
-    border-bottom: 1px solid #eee;
+    padding: 12px;
+    border-bottom: 1px solid rgba(212, 160, 23, 0.2);
     
     &:last-child {
       border-bottom: none;

@@ -248,21 +248,65 @@ const Movies = () => {
                 {movie.genre} • {movie.releaseYear} • RWF {movie.rentalPrice}/day
               </Typography>
             </Box>
-            <CardActions sx={{ justifyContent: 'space-between', p: 1 }}>
-              <IconButton size="small" onClick={() => handleView(movie)} color="primary">
-                <VisibilityIcon />
+<Box
+              sx={{
+                position: 'absolute',
+                bottom: 16,
+                right: 16,
+                display: 'flex',
+                gap: 0.5,
+                zIndex: 3,
+                backgroundColor: 'rgba(0,0,0,0.7)',
+                borderRadius: 2,
+                p: 0.5,
+                backdropFilter: 'blur(4px)',
+                pointerEvents: 'auto'
+              }}
+            >
+              <IconButton 
+                size="small" 
+                onClick={() => handleView(movie)} 
+                sx={{ 
+                  color: 'white', 
+                  minWidth: 32, 
+                  width: 32, 
+                  height: 32,
+                  '&:hover': { backgroundColor: 'rgba(255,255,255,0.2)' }
+                }}
+              >
+                <VisibilityIcon fontSize="small" />
               </IconButton>
               {isAdmin && (
                 <>
-                  <IconButton size="small" onClick={() => handleEdit(movie)} color="primary">
-                    <EditIcon />
+                  <IconButton 
+                    size="small" 
+                    onClick={() => handleEdit(movie)} 
+                    sx={{ 
+                      color: 'white', 
+                      minWidth: 32, 
+                      width: 32, 
+                      height: 32,
+                      '&:hover': { backgroundColor: 'rgba(255,255,255,0.2)' }
+                    }}
+                  >
+                    <EditIcon fontSize="small" />
                   </IconButton>
-                  <IconButton size="small" onClick={() => handleDeleteClick(movie)} color="error">
-                    <DeleteIcon />
+                  <IconButton 
+                    size="small" 
+                    onClick={() => handleDeleteClick(movie)} 
+                    sx={{ 
+                      color: 'white', 
+                      minWidth: 32, 
+                      width: 32, 
+                      height: 32,
+                      '&:hover': { backgroundColor: 'rgba(255,255,255,0.2)' }
+                    }}
+                  >
+                    <DeleteIcon fontSize="small" />
                   </IconButton>
                 </>
               )}
-            </CardActions>
+            </Box>
           </Card>
         ))}
       </Box>

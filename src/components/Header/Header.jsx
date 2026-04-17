@@ -54,7 +54,15 @@ const Header = ({ onMenuClick }) => {
       position="fixed"
       sx={{
         zIndex: (theme) => theme.zIndex.drawer + 1,
-        transition: 'background-color 0.3s ease',
+        transition: 'all 0.3s ease',
+        background: isDark 
+          ? 'linear-gradient(145deg, #1A1D24 0%, #0C0F14 100%)' 
+          : 'linear-gradient(145deg, #FFFFFF 0%, #FDF6E3 100%)',
+        color: isDark ? '#F5F5F5' : '#1A1A1A',
+        boxShadow: isDark 
+          ? '0 4px 20px rgba(212, 160, 23, 0.3)' 
+          : '0 4px 20px rgba(212, 160, 23, 0.15)',
+        backdropFilter: 'blur(10px)',
       }}
     >
       <Toolbar>
@@ -110,9 +118,12 @@ const Header = ({ onMenuClick }) => {
             size="small"
             sx={{
               display: { xs: 'none', sm: 'flex' },
-              backgroundColor: isAdmin ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.1)',
-              color: '#fff',
-              '& .MuiChip-icon': { color: '#fff' },
+              backgroundColor: isAdmin 
+                ? 'rgba(255,255,255,0.2)' 
+                : 'rgba(255,255,255,0.15)',
+              color: isDark ? '#F5F5F5' : '#1A1A1A',
+              '& .MuiChip-icon': { color: isDark ? '#F5F5F5' : '#1A1A1A' },
+              fontWeight: 600,
             }}
           />
 
@@ -121,9 +132,13 @@ const Header = ({ onMenuClick }) => {
               sx={{
                 width: 36,
                 height: 36,
-                backgroundColor: isAdmin ? '#1976d2' : '#2e7d32',
+                backgroundColor: isAdmin 
+                  ? 'linear-gradient(135deg, #D4A017, #B8860B)' 
+                  : 'linear-gradient(135deg, #FF8C00, #DAA520)',
+                color: '#1A1A1A',
                 fontSize: 16,
                 fontWeight: 600,
+                boxShadow: '0 2px 12px rgba(212, 160, 23, 0.4)',
               }}
             >
               {user?.name?.charAt(0).toUpperCase()}

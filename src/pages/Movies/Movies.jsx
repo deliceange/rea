@@ -46,6 +46,7 @@ const Movies = () => {
     genre: '',
     releaseYear: '',
     rentalPrice: '',
+    totalDvds: '',
     coverImage: '',
     description: '',
   });
@@ -70,6 +71,7 @@ const Movies = () => {
       genre: movie.genre,
       releaseYear: movie.releaseYear,
       rentalPrice: movie.rentalPrice,
+      totalDvds: movie.totalDvds || '',
       coverImage: movie.coverImage,
       description: movie.description || '',
     });
@@ -83,6 +85,10 @@ const Movies = () => {
   };
 
   const handleRentClick = () => {
+    if (selectedMovie.availableDvds <= 0) {
+      alert('No DVDs available for this movie!');
+      return;
+    }
     setRentalFormData({
       rentalDate: new Date().toISOString().split('T')[0],
       days: 1,
@@ -125,6 +131,7 @@ const Movies = () => {
       genre: '',
       releaseYear: '',
       rentalPrice: '',
+      totalDvds: '',
       coverImage: '',
       description: '',
     });
@@ -175,6 +182,11 @@ const Movies = () => {
       newErrors.rentalPrice = 'Rental price is required';
     } else if (!/^\d+$/.test(formData.rentalPrice)) {
       newErrors.rentalPrice = 'Rental price must be a number';
+    }
+    if (isAdmin && !formData.totalDvds) {
+      newErrors.totalDvds = 'Total DVDs is required';
+    } else if (isAdmin && !/^\d+$/.test(formData.totalDvds)) {
+      newErrors.totalDvds = 'Total DVDs must be a number';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -373,6 +385,21 @@ const Movies = () => {
               className="form-field"
               required
             />
+            {isAdmin && (
+              <TextField
+                fullWidth
+                label="Total DVDs Available"
+                name="totalDvds"
+                type="number"
+                inputProps={{ min: 1 }}
+                value={formData.totalDvds}
+                onChange={handleInputChange}
+                error={!!errors.totalDvds}
+                helperText={errors.totalDvds}
+                className="form-field"
+                required
+              />
+            )}
             
             <TextField
               fullWidth

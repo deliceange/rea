@@ -61,6 +61,12 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   const createRental = useCallback((rental) => {
+    // Find movie to check stock
+    const movie = movies.find((m) => m.id === rental.movieId);
+    if (!movie || movie.availableDvds <= 0) {
+      throw new Error('No DVDs available for this movie');
+    }
+
     const newRental = {
       ...rental,
       id: Date.now(),
@@ -68,6 +74,15 @@ export const AppProvider = ({ children }) => {
       lateFee: 0,
     };
     setRentals((prev) => [...prev, newRental]);
+    
+    // Decrement movie available DVDs
+    setMovies((prev) =>
+      prev.map((m) =>
+        m.id === rental.movieId
+          ? { ...m, availableDvds: m.availableDvds - 1 }
+          : m
+      )
+    );
     
     setCustomers((prev) =>
       prev.map((c) =>
@@ -78,7 +93,7 @@ export const AppProvider = ({ children }) => {
     );
     
     return newRental;
-  }, []);
+  }, [movies]);
 
   const returnRental = useCallback((id, actualReturnDate) => {
     const rental = rentals.find((r) => r.id === id);
@@ -99,6 +114,15 @@ export const AppProvider = ({ children }) => {
               lateFee,
             }
           : r
+      )
+    );
+
+    // Increment movie available DVDs on return
+    setMovies((prev) =>
+      prev.map((m) =>
+        m.id === rental.movieId
+          ? { ...m, availableDvds: m.availableDvds + 1 }
+          : m
       )
     );
   }, [rentals]);

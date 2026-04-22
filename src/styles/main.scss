@@ -236,6 +236,8 @@ body {
 /* DataGrid responsive */
 .MuiDataGrid-root {
   font-size: 14px;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
   
   @media (max-width: 600px) {
     font-size: 12px;

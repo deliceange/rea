@@ -41,7 +41,7 @@ const Sidebar = ({ mobileOpen, onMobileClose }) => {
   const { isAdmin } = useAuth();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
-  const drawerWidth = 240;
+  const drawerWidth = 180;
   const menuItems = isAdmin ? adminMenuItems : customerMenuItems;
 
   const handleNavigation = (path) => {
@@ -56,11 +56,11 @@ const Sidebar = ({ mobileOpen, onMobileClose }) => {
       <List>
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding>
-            <ListItemButton
+              <ListItemButton
               selected={location.pathname === item.path}
               onClick={() => handleNavigation(item.path)}
               sx={{
-                mx: 1,
+                mx: 0.5,
                 borderRadius: 1,
                 mb: 0.5,
                 '&.Mui-selected': {
@@ -77,7 +77,7 @@ const Sidebar = ({ mobileOpen, onMobileClose }) => {
             >
               <ListItemIcon
                 sx={{
-                  minWidth: 40,
+                  minWidth: 32,
                   color:
                     location.pathname === item.path
                       ? theme.palette.primary.contrastText
@@ -103,13 +103,14 @@ const Sidebar = ({ mobileOpen, onMobileClose }) => {
         open={mobileOpen}
         onClose={onMobileClose}
         ModalProps={{ keepMounted: true }}
-        sx={{
-          display: { xs: 'block', md: 'none' },
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-          },
-        }}
+            sx={{
+              display: { xs: 'block', md: 'none' },
+              '& .MuiDrawer-paper': {
+                width: drawerWidth,
+                boxSizing: 'border-box',
+                pl: 0,
+              },
+            }}
       >
         <Toolbar />
         {drawerContent}
@@ -125,6 +126,7 @@ const Sidebar = ({ mobileOpen, onMobileClose }) => {
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
+            pl: 0,
             transition: 'width 0.3s ease',
             overflowX: 'hidden',
           },

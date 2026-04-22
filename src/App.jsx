@@ -34,7 +34,7 @@ const AppContent = () => {
   const { isAuthenticated, isAdmin } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   
-  const drawerWidth = 240;
+const drawerWidth = 180;
   const sidebarWidth = isMobile ? 0 : (sidebarOpen ? drawerWidth : 0);
 
   const handleMobileToggle = () => {
@@ -60,7 +60,7 @@ const AppContent = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: { xs: 1, sm: 2, md: 3 },
+          p: { xs: 0, sm: 0, md: 0 },
           backgroundColor: 'background.default',
           minHeight: '100vh',
           ml: isMobile ? 0 : `${sidebarWidth}px`,

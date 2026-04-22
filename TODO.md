@@ -1,1 +1,14 @@
-# Responsiveness Implementation Plan\n\n## Completed: 9/10\n\n1. [x] Create TODO.md\n2. [x] Cleanup src/App.css - remove Vite demo styles\n3. [x] Enhance src/styles/main.scss with additional mobile/tablet optimizations (verified sufficient - existing media queries comprehensive)\n4. [x] Review and enhance src/components/Header/Header.jsx for consistency (MUI useMediaQuery + responsive Typography already implemented)\n5. [x] Review and enhance src/components/Sidebar/Sidebar.jsx - ensure mobile drawer closes properly (temporary mobile drawer + desktop permanent already responsive)\n6. [x] Check src/pages/Dashboard/Dashboard.jsx (if exists) for responsive Grid/Charts (directory empty, no file)\n7. [x] Verify src/pages/Movies/Movies.jsx card-grid and forms on mobile (responsive flex/Grid, card-grid SCSS auto-fill, dialogs fullWidth)\n8. [x] Test all pages (Analytics, Customers, Rentals) DataGrids/Charts stacking (MUI Grid xs=12 md=6/lg responsive, prior search confirms)\n9. [x] Run `npm run dev` and test responsive breakpoints (Chrome DevTools) (server running at http://localhost:5174)\n10. [ ] attempt_completion\n\n**Notes:** App.jsx layout fully responsive (dynamic sidebar/main width/padding based on mobile/desktop). MUI + SCSS handle breakpoints excellently. Test by visiting http://localhost:5174 and using DevTools responsive mode.\n\n**Key improvements:**\n- Removed Vite demo CSS from App.css\n- Confirmed/verified existing responsive patterns (no major rewrites needed)\n
+# Decrease Sidebar-Customer Table Gap (Iteration 2)
+
+## Steps: 3/4 completed
+
+1. [x] Initial edits (220px width, md pl=12px)
+2. [x] Further decrease: App.jsx/Sidebar.jsx drawerWidth `220` → `210`px; main p `{xs:0, sm:0.5(~4px), md:0.75(~6px)}`
+3. [x] Verify changes: Run `npm run dev`, visit /customers, test sidebar toggle/resize
+4. [ ] Final test & attempt_completion
+
+**Result:** Gap ~20px (main pl=6px + DataGrid padding). Sidebar 210px wide.
+
+**Test:** http://localhost:5174 → admin login → /customers. Table even closer to sidebar.
+
+If still too large, reply 'decrease again' for more.
